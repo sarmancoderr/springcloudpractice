@@ -1,14 +1,26 @@
 package es.sarman.pruebatecnica;
 
+import es.sarman.pruebatecnica.Heroes.Hero;
+import es.sarman.pruebatecnica.Heroes.HeroRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
 public class PruebatecnicaApplication {
+
+	Logger logger = LoggerFactory.getLogger(PruebatecnicaApplication.class);
+
+	@Autowired
+	HeroRepository heroRepository;
 
 	@Value("${greet}")
 	public String greet;
@@ -22,4 +34,13 @@ public class PruebatecnicaApplication {
 		return greet;
 	}
 
+	@Bean
+	InitializingBean sendDatabase() {
+		return () -> {
+			logger.info("FILLING DB");
+			heroRepository.save(new Hero("Superman"));
+			heroRepository.save(new Hero("Batman"));
+			heroRepository.save(new Hero("Manolito el fuerte"));
+		};
+	}
 }
