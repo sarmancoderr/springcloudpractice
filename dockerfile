@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM alpine
 
 RUN mkdir /app
 
@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN apt update && apt install -y maven
+RUN apk update && apk add maven
 
 RUN mvn package
 
