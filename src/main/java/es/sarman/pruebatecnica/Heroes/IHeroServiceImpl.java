@@ -20,13 +20,7 @@ public class IHeroServiceImpl implements IHeroService {
 
     @Override
     public Hero getHero(int id) {
-        Optional<Hero> optionalHero = heroRepository.findById(id);
-
-        if (!optionalHero.isPresent()) {
-            throw new HeroNotFoundException();
-        }
-
-        return optionalHero.get();
+        return heroRepository.findById(id).orElseThrow(() -> new HeroNotFoundException());
     }
 
     @Override
@@ -36,33 +30,23 @@ public class IHeroServiceImpl implements IHeroService {
 
     @Override
     public Hero updateHero(int id, HeroDTO update) {
-        Hero existingHero = heroRepository.findByName(update.getName());
+        Optional<Hero> existingHero = heroRepository.findByName(update.getName());
 
-        if (existingHero != null) {
+        if (existingHero.isPresent()) {
             throw new ExistingHeroException();
         }
 
-        Optional<Hero> optionalHero = heroRepository.findById(id);
+        Hero hero = heroRepository.findById(id).orElseThrow(() -> new HeroNotFoundException());
 
-        if (!optionalHero.isPresent()) {
-            throw new HeroNotFoundException();
-        }
-
-        Hero hero = optionalHero.get();
         hero.setName(update.getName());
         return heroRepository.save(hero);
     }
 
     @Override
     public boolean removeHero(int id) {
-        Optional<Hero> optionalHero = heroRepository.findById(id);
-
-        if (!optionalHero.isPresent()) {
-            throw new HeroNotFoundException();
-        }
-
-        Hero hero = optionalHero.get();
-        heroRepository.delete(hero);
+        heroRepository.delete(
+                heroRepository.findById(id).orElseThrow(() -> new HeroNotFoundException())
+        );
         return true;
     }
 }

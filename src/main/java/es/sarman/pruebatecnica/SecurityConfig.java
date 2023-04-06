@@ -1,6 +1,7 @@
 package es.sarman.pruebatecnica;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,15 +14,30 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+    @Value("${spring.security.user.name}")
+    private String user;
+    @Value("${spring.security.user.password}")
+    private String password;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/heroes/*").permitAll()
+                .antMatchers("/greet").permitAll()
+                .antMatchers(HttpMethod.GET, "/heroes*").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        auth
+                .inMemoryAuthentication()
+                .withUser(user)
+                .password(passwordEncoder.encode(password))
+                .authorities("ROLE_USER");
     }
 
 }
