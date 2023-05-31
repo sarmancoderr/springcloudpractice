@@ -32,7 +32,7 @@ public class HeroController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Hero updateHero(@PathVariable int id, @RequestBody HeroDTO heroDTO) {
+    public Hero updateHero(@PathVariable int id, @RequestBody HeroDTO heroDTO,  @RequestHeader("Authorization") String header) {
         return heroService.updateHero(id, heroDTO);
     }
 

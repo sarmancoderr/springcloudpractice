@@ -7,8 +7,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.HeaderParam;
 import java.util.List;
 
 @SpringBootApplication
@@ -37,5 +39,13 @@ public class EurekaconsumerApplication {
 	@GetMapping("/search")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Hero> listHeroes(@RequestParam String query) {return heroesClient.listHeroes(query);}
+
+	@PutMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Hero updateHero(@PathVariable int id, @RequestBody HeroDTO heroDTO, @RequestHeader("Authorization") String header) {
+		System.out.println(header);
+
+		return heroesClient.updateHero(id, heroDTO, header);
+	}
 
 }
