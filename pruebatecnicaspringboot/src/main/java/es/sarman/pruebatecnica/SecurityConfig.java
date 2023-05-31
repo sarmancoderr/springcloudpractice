@@ -24,7 +24,7 @@ public class SecurityConfig {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/greet").permitAll()
-                .antMatchers(HttpMethod.GET, "/heroes*").permitAll()
+                .antMatchers(HttpMethod.GET, "/heroes/*").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();
