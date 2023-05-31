@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: eurekaconsumerpruebatecnica
+server:
+  port: 8003
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
